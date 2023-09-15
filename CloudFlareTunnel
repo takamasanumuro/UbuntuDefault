@@ -1,0 +1,82 @@
+File to explain how to host a VPS using AWS, then buy a domain name and link it to a Cloudflare tunnel.
+This is a very simple way to host a website and make it accessible to everyone.
+```
+## How to host a website using AWS, Cloudflare and Cloudflare Tunnel
+
+Create an AWS account and create a new Lightsail instance. Choose the cheapest one, it's more than enough.
+Once the instance is created, go to the Networking tab and create a static IP. It will not change when you stop and start
+the instance. This is important because you will need to link the IP to your domain name, as well as using it for
+SSH access.
+
+Download the default SSH key for the region of your instance. It serves like a password to access the instance.
+Change the permissions of the file to 400 (read only for the owner) and use it to connect to the instance.
+
+#COmmand
+#Make sure you are in the same directory as the key file and use the name of the file in the command below
+chmod 400 [key file].pem
+
+Then connect to the instance using the public IP of the instance and the key file.
+ssh -i [key file].pem ubuntu@[public IP]
+
+Once connected, install Docker and Docker Compose to launch the application and the Cloudflare Tunnel Connector.
+Docker containers are isolated environments that encapsulate the application and its dependencies. They are similar
+to virtual machines but are much lighter and faster to start.
+
+##Install Docker
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+# Remove sudo requirement for Docker
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+
+#Install docker-compose
+sudo apt install docker-compose
+
+
+Now proceed to install the Partkeepr image from Mhubig's repository. Partkeepr is an inventory management software
+that can be used to manage electronic components. It is very useful to keep track of what you have and what you need.
+
+git clone https://github.com/mhubig/docker-partkeepr.git
+cd docker-partkeepr
+
+Edit the docker-compose.yml file to change desired parameters and to expose the ports you want to use.
+Expose port 80 to access the application from the internet. You can also expose port 443 if you want to use HTTPS.
+Then run the following command to start the application.
+
+docker-compose up -d
+
+
+Now go to Hostinger and buy a cheap domain name for 1 dollar. It will last for 1 year before you have to renew it for 35 dollars.
+After 1 year, it is better to simply buy a new 1 dollar domain name and link it to the Cloudflare platform.
+
+Once you have your domain name, go back to Hostinger and change the authoritative DNS servers to Cloudflare's.
+You can find them in the DNS tab of your Cloudflare account. It should look like this:
+
+#Cloudflare DNS servers
+#ns1.Cloudflare.com
+#ns2.Cloudflare.com
+
+Now go to Cloudflare and link your domain name to your Cloudflare account.
+After that go to Zero-Trust tab and go to tunnels. Create a new tunnel, give it a name and install
+the Cloudflare Tunnel Connector on your instance. You can find the instructions in the Cloudflare website.
+Set the public hostname to the static IP of your instance and set the port to the one you exposed in the docker-compose.yml file.
+Set the domain name to the one you bought in Hostinger and registered in Cloudflare. Choose any subdomain you want.
+Then run the command snippet Cloudflare gives you to start the tunnel.
+
+After that, you should be able to access your website using your domain name.

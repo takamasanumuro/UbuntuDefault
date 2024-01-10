@@ -65,6 +65,7 @@ alias gpt='tgpt'
 alias cdio='cd ~/Documents/PlatformIO'
 alias piodl='pio device list'
 alias piodm='pio device monitor'
+alias piocl='pio run -t clean'
 alias reloadzsh='source ~/.zshrc'
 alias reloadbash='source ~/.bashrc'
 alias zrc='micro ~/.zshrc'
@@ -84,6 +85,7 @@ alias LS='ls'
 alias CP='cp'
 alias move='mv'
 alias copy='cp'
+alias phone='scrcpy -S --tcpip=$(hostname -I | awk '{print $1}')'
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
 

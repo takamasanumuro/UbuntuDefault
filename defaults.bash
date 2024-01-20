@@ -85,7 +85,9 @@ alias LS='ls'
 alias CP='cp'
 alias move='mv'
 alias copy='cp'
-alias phone='scrcpy -S --tcpip=$(hostname -I | awk '{print $1}')'
+alias phone='scrcpy -S'
+alias phonewifi="scrcpy -S -b 2M -m 768 --tcpip"
+
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
 

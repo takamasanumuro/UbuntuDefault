@@ -1,5 +1,64 @@
 #Programs to install when setting up a new system
 
+#curl(used to download files from the internet)
+sudo apt install curl
+
+
+#eza(improved ls)
+wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo tee /etc/apt/trusted.gpg.d/gierens.asc
+echo "deb http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo apt update
+sudo apt install -y eza
+
+#bat(improved cat)
+sudo apt install bat
+
+#autojump(terminal directory navigation)
+sudo apt install autojump
+echo ". /usr/share/autojump/autojump.sh" >> ~/.bashrc
+echo ". /usr/share/autojump/autojump.sh" >> ~/.zshrc
+
+#tgpt(terminal ChatGPT)
+curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin
+
+#https://tmuxcheatsheet.com/ Useful tmux cheatsheet
+#tmux(terminal multiplexer and session manager, works very well with mosh)
+sudo apt install tmux
+#tmux packet manager
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+touch ~/.tmux.conf
+echo "
+# List of plugins for ~/.tmux.conf 
+set -g @plugin 'tmux-plugins/tpm'                    #plugin manager
+set -g @plugin 'tmux-plugins/tmux-sensible'          #improves tmux defaults
+set -g @plugin 'catppuccin/tmux'                     #catppuccin status bar
+set -g mouse on                                      #enable mouse support
+set -g @plugin 'tmux-plugins/tmux-yank'              #copy to clipboard
+set -g @plugin 'tmux-plugins/tmux-resurrect'         #save tmux sessions across restarts
+set -g @plugin 'tmux-plugins/tmux-continuum'         #auto save tmux sessions
+
+
+
+#Stats indexes of windows and panes at 1, not 0, to improve ease of layout
+set -g base-index 1
+setw -g pane-base-index 1
+set-window-option -g pane-base-index 1
+set-option -g renumber-windows on
+
+set-option -sa terminal-overrides \",xterm*:Tc\" #fixes tmux colors
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
+      
+" >> ~/.tmux.conf 
+
+
+#Update configurations
+tmux source ~/.tmux.conf 
+#Then press Ctrl-B ,then I (capital I) to fetch the plugins.
+#Press the I alone, after pressing CTRL-B, not together with CTRL-B
+#####################################
+
 
 ###################################3||ZSH install and configuration||###############################################
 
@@ -7,42 +66,20 @@
 sudo apt install zsh
 #Make it default shell
 chsh -s $(which zsh)
-#logout and login again, then open the terminal and select option 2 to populate configuration files.
+#logout and login again, then open the terminal and select the option to not populate configuration files
 #########################################################################################################################################################################
+gnome-session-quit
 
 #oh-my-zsh(terminal framework)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-##zsh packages
 
-#zplug(package manager)
-curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-
-
-#improved syntax highlighting
-git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git \
-${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
-
-#autosuggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-
-#warhol(command colorizer)
-sudo apt install grc #dependency to colorize commands, warhol wraps around it
-cd ~/.oh-my-zsh/custom/plugins
-git clone https://github.com/unixorn/warhol.plugin.zsh.git warhol
-source ~/.zshrc
-
-
-#fzf(terminal fuzzy finder) MAKE SURE ZSH IS INSTALLED BEFORE RUNNING THIS
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
-source ~/.zshrc
-
-
-####||ZSHRC CONFIGURATIONS||
+#####################################Place those settings into your ~/.zshrc file###################################################
+echo " 
+export ZSH="\$HOME/.oh-my-zsh"
 ZSH_THEME="gnzh" 
-ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true" ##Command autocorrection 
+
 #add plugins to .zshrc
 plugins=( 
     # other plugins...
@@ -58,6 +95,9 @@ plugins=(
     warhol #command colorizer
     colored-man-pages # adds color to man pages
 )
+source $ZSH/oh-my-zsh.sh
+
+
 
 
 alias repup='git add . && git commit --amend --no-edit && git push origin --force-with-lease'
@@ -85,27 +125,58 @@ alias LS='ls'
 alias CP='cp'
 alias move='mv'
 alias copy='cp'
+alias dps='sudo docker ps'
+alias dcu='sudo docker-compose up -d'
 alias phone='scrcpy -S'
-alias phonewifi="scrcpy -S -b 2M -m 768 --tcpip"
-
+alias phonewifi=\"scrcpy -S -b 2M -m 768 --tcpip\"
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
+export defaultNTFYTopic=alertas-adriano  #NTFY topic names cannot use slashes /
 
 # Function to wrap ntfy.sh curl request
 function ntfy(){
-    # $1 is the message to be sent
-    # $2 is the topic name to which send the message
-    if [ -z "$2" ]; then
-        topic="alertas-adriano"
+    # \$1 is the message to be sent
+    # \$2 is the topic name to which publish the message
+    if [ -z \"\$2\" ]; then
+        topic=\$defaultNTFYTopic         #Use a default topic name
     else
-        topic="$2"
+        topic=\"\$2\"                   #Use the provided topic name
     fi
-    curl -d "$1" ntfy.sh/$topic
+    curl -d \"\$1\" ntfy.sh/\$topic
 }
 
-if [ -n "SSH_CLIENT" ]; then
-    curl -d "SSH login from $(whoami) on $(hostname) at $(date)" ntfy.sh/alertas-emobil
+##Automatically publish a notification when an user logins into SSH
+if [ -n \"SSH_CLIENT\" ]; then
+    curl -d \"SSH login from \$(whoami) on \$(hostname) at \$(date)\" ntfy.sh/\$defaultNTFYTopic
 fi
+
+" >> ~/.zshrc
+
+
+########################################################################################################################################
+
+#zplug(package manager)
+curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+
+
+#improved syntax highlighting
+git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git \
+${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
+
+#autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions \
+${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+sudo apt install grc # Dependency to colorize commands; warhol wraps around it
+git clone https://github.com/unixorn/warhol.plugin.zsh.git \
+${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/warhol
+
+
+#fzf(terminal fuzzy finder) MAKE SURE ZSH IS INSTALLED BEFORE RUNNING THIS
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install # Adds [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh to .zshrc file
+
+source ~/.zshrc
 
 #########################################################################################################################
 
@@ -118,9 +189,6 @@ sudo apt install expect
 
 #remove brltty( in order for CH341 driver to work)
 sudo apt-get autoremove brltty
-
-#curl(used to download files from the internet)
-sudo apt install curl
 
 #micro(terminal text editor)
 sudo apt install micro
@@ -137,22 +205,6 @@ sudo snap install bottom
 #neofetch(system info)
 sudo apt install neofetch
 
-#autojump(terminal directory navigation)
-sudo apt install autojump
-echo ". /usr/share/autojump/autojump.sh" >> ~/.bashrc
-
-#tgpt(terminal ChatGPT)
-curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin
-
-#eza(improved ls)
-wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo tee /etc/apt/trusted.gpg.d/gierens.asc
-echo "deb http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-sudo apt update
-sudo apt install -y eza
-
-#bat(improved cat)
-sudo apt install bat
-
 # # # # #tree(terminal directory tree)
 sudo apt install tree
 
@@ -161,54 +213,10 @@ sudo apt install mosh
 #https://mosh.org/#usage  Access this link to see how to use mosh
 #If hosting mosh on an AWS Lightsail instance, you must allow UDP traffic on port 60000-61000 on the instance firewall
 
-#https://tmuxcheatsheet.com/ Useful tmux cheatsheet
-#tmux(terminal multiplexer and session manager, works very well with mosh)
-sudo apt install tmux
-#tmux packet manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-touch ~/.tmux.conf
-echo " \
-###################################
-# List of plugins for ~/.tmux.conf 
-set -g @plugin 'tmux-plugins/tpm' #plugin manager
-set -g @plugin 'tmux-plugins/tmux-sensible' #improves tmux defaults
-set -g @plugin 'catppuccin/tmux' #catppuccin status bar
-set -g mouse on #enable mouse support
-set -g @plugin 'tmux-plugins/tmux-yank' #copy to clipboard
-set -g @plugin 'tmux-plugins/tmux-resurrect' #save tmux sessions across restarts
-set -g @plugin 'tmux-plugins/tmux-continuum' #auto save tmux sessions
-
-#Stats windows and panes at 1, not 0, to improve ease of layout
-set -g base-index 1
-setw -g pane-base-index 1
-set-window-option -g pane-base-index 1
-set-option -g renumber-windows on
-set-option -sa terminal-overrides ",xterm*:Tc" #fixes tmux colors
-
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
-" >> ~/.tmux.conf
-
-#tmux source ~/.tmux.conf
-#Then press prefix + I (capital i, as in Install) to fetch the plugins
-#####################################
-
-
-#ranger(terminal file manager)
-sudo apt install ranger
-
-#taskbook(terminal todo list)
-sudo snap install taskbook
-alias tb=taskbook
-
-#ohmyposh(terminal theme)
-curl -s https://ohmyposh.dev/install.sh | sudo bash -s
-echo 'eval "$(oh-my-posh init bash)"' >> ~/.bashrc
-exec bash
-
-#navi(terminal cheatsheet)
-bash <(curl -sL https://raw.githubusercontent.com/denisidoro/navi/master/scripts/install)
-source ~/.bashrc
+######ohmyposh(terminal theme)
+#####curl -s https://ohmyposh.dev/install.sh | sudo bash -s
+#####echo 'eval "$(oh-my-posh init bash)"' >> ~/.bashrc
+#####exec bash
 
 #ngrok(terminal tunneling)
 sudo snap install ngrok
@@ -217,7 +225,7 @@ sudo snap install ngrok
 sudo apt install barrier
 #Disable SSL on configs tab
 sudo micro /etc/gdm3/custom.conf
-#Uncomment #WaylandEnable=false
+#Uncomment #WaylandEnable=false       --> This can cause HDMI bugs on my laptop when I try to use an external monitor
 sudo systemctl restart gdm3
 
 #avahi((network discovery via .local)
@@ -237,6 +245,8 @@ sudo apt install nmap
 #Gnome extensions
 sudo apt install gnome-tweaks
 sudo apt install gnome-shell-extensions
+
+#Install the extension for chrome before acquiring the addons
 https://extensions.gnome.org/extension/4642/mouse-follows-focus/ #Moves mouse to the center of the window when open
 https://extensions.gnome.org/extension/5410/grand-theft-focus/ #Removes window is ready notification and goes straight to the window
 https://extensions.gnome.org/extension/3724/net-speed-simplified/ # Network upload and download speed 
@@ -259,31 +269,43 @@ python3 -m pipx ensurepath
 #mavproxy
 sudo apt-get install python3-dev python3-opencv python3-wxgtk4.0 python3-pip python3-matplotlib python3-lxml python3-pygame
 pip3 install PyYAML mavproxy --user
-echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.zshrc
+echo 'export PATH="$PATH:$HOME/.local/bin"' >> ~/.zshrc  #Adds .local/bin to the PATH env variable.
+#Adds mavproxy as an alias to mavproxy.py
+echo " 
+alias mavproxy='\$HOME/.local/bin/mavproxy.py'
+" >> ~/.zshrc
+source ~/.zshrc
 
 #QGroundControl(ground control station for drones)
+
+#Ubuntu comes with a serial modem manager that interferes with any robotics related use of a serial port (or USB serial).
+#Before installing QGroundControl you should remove the modem manager and grant yourself permissions to access the serial port. 
+#You also need to install GStreamer in order to support video streaming.
+
 sudo usermod -a -G dialout $USER
 sudo apt-get remove modemmanager -y
 sudo apt install gstreamer1.0-plugins-bad gstreamer1.0-libav gstreamer1.0-gl -y
 sudo apt install libqt5gui5 -y
 sudo apt install libfuse2 -y
+gnome-session-quit # Logout and login again to enable the change to user permissions.
 
-mkdir ~/Documents/DroneTools
-wget https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage
-chmod +x ./QGroundControl.AppImage
-mv ./QGroundControl.AppImage ./QGroundControl # rename
-#create symbolic link
-sudo ln -s ~/Documents/DroneTools/QGroundControl /usr/local/bin/QGroundControl
-sudo ln -s ~/Documents/DroneTools/QGroundControl /usr/local/bin/QGC
-sudo ln -s ~/Documents/DroneTools/QGroundControl /usr/local/bin/qgc
-cd ~ # go back to home directory
+#Proceed from here after logging in again
+mkdir -p ~/Documents/DroneTools/QGroundControl
+wget https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage -O ~/Documents/DroneTools/QGroundControl/QGroundControlApp
+chmod +x ~/Documents/DroneTools/QGroundControl/QGroundControlApp
+
+echo "
+alias qgc='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+alias qgroundcontrol='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+alias QGroundControl='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+" >> ~/.zshrc
+
 
 #Install FlightGear for 3d Visualization of SITL simulation
 #Inside the program make sure to download environment and aircrafts
 sudo apt-get install flightgear
 sudo ln -s ~/Documents/DroneTools/ardupilot/Tools/autotest/sim_vehicle.py /usr/local/bin/sitl
 sudo ln -s ~/Documents/DroneTools/ardupilot/Tools/autotest/fg_quad_view.sh /usr/local/bin/flightgear
-
 
 
 #Create PlatformIO symbolic links for global access on terminal
@@ -326,7 +348,7 @@ newgrp docker
 #Install docker-compose
 sudo apt install docker-compose
 
-#Download and install deb package
+#Installation for Docker Desktop
 curl https://desktop.docker.com/linux/main/amd64/docker-desktop-4.23.0-amd64.deb?utm_source=docker&utm_medium=webreferral&utm_campaign=docs-driven-download-linux-amd64
 $ sudo apt-get update
 $ sudo apt-get install ./docker-desktop-4.23.0-amd64.deb
@@ -356,9 +378,9 @@ sudo npm install -g tldr
 
 
 #-------------------------OpenVPN------------
-sudo apt install apt-transport-https
-curl -fsSL https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub | sudo gpg --dearmor > /etc/apt/trusted.gpg.d/openvpn-repo-pkg-keyring.gpg
-curl -fsSL https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-jammy.list >/etc/apt/sources.list.d/openvpn3.list
+sudo mkdir -p /etc/apt/keyrings && curl -fsSL https://packages.openvpn.net/packages-repo.gpg | sudo tee /etc/apt/keyrings/openvpn.asc
+DISTRO=$(lsb_release -c | awk '{print $2}')
+echo "deb [signed-by=/etc/apt/keyrings/openvpn.asc] https://packages.openvpn.net/openvpn3/debian $DISTRO main" | sudo tee /etc/apt/sources.list.d/openvpn-packages.list
 sudo apt update
 sudo apt install openvpn3
 

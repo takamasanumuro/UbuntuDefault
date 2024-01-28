@@ -98,37 +98,37 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 
-
-
-alias repup='git add . && git commit --amend --no-edit && git push origin --force-with-lease'
+alias CD='cd'
+alias cat='batcat' # batcat is a better cat
+alias copy='cp'
+alias CP='cp'
+alias dcu='sudo docker-compose up -d'
+alias dps='sudo docker ps'
+alias ga='git add'
+alias gc='git commit -m'
+alias gi='git init'
+alias gp='git push origin'
 alias gpt='tgpt'
-alias cdio='cd ~/Documents/PlatformIO'
+alias huss='husarnet status' # Get status of Husarnet VPN
+alias ipconfig='ifconfig'
+alias LS='ls'
+alias ls='eza' # eza is a better ls
+alias mavconnect="~/.local/bin/mavproxy.py --out=tcpin:0.0.0.0:14580"
+alias mavproxy="~/.local/bin/mavproxy.py"
+alias move='mv'
+alias MV='mv'
 alias piodl='pio device list'
 alias piodm='pio device monitor'
 alias piocl='pio run -t clean'
-alias reloadzsh='source ~/.zshrc'
-alias reloadbash='source ~/.bashrc'
-alias zrc='micro ~/.zshrc'
-alias brc='micro ~/.bashrc'
-# # alias zrcode='code ~/.zshrc'
-alias brcode='code ~/.bashrc'
-alias ls='eza' # eza is a better ls
-alias cat='batcat' # batcat is a better cat
-alias huss='husarnet status' # Get status of Husarnet VPN
-alias gi='git init'
-alias ga='git add'
-alias gc='git commit -m'
-alias gp='git push origin'
-alias ipconfig='ifconfig'
-alias CD='cd'
-alias LS='ls'
-alias CP='cp'
-alias move='mv'
-alias copy='cp'
-alias dps='sudo docker ps'
-alias dcu='sudo docker-compose up -d'
 alias phone='scrcpy -S'
-alias phonewifi=\"scrcpy -S -b 2M -m 768 --tcpip\"
+alias phonewifi="scrcpy -S -b 2M -m 768 --tcpip"
+alias reloadbash='source ~/.bashrc'
+alias reloadzsh='source ~/.zshrc'
+alias repup='git add . && git commit --amend --no-edit && git push origin --force-with-lease'
+alias zrc='micro ~/.zshrc'
+
+
+
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
 export defaultNTFYTopic=alertas-adriano  #NTFY topic names cannot use slashes /

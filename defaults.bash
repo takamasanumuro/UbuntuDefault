@@ -126,7 +126,15 @@ alias reloadbash='source ~/.bashrc'
 alias reloadzsh='source ~/.zshrc'
 alias repup='git add . && git commit --amend --no-edit && git push origin --force-with-lease'
 alias zrc='micro ~/.zshrc'
+alias qgc='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+alias qgroundcontrol='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+alias QGroundControl='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+alias falstad='~/Documents/falstad/circuitjs1'
 
+
+
+
+bindkey '^ ' autosuggest-accept
 
 
 

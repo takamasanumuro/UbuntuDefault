@@ -349,9 +349,9 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 
 # Remove sudo requirement for Docker
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
+sudo groupadd docker # Create the docker group.
+sudo usermod -aG docker $USER # Append your user to the docker group.
+newgrp docker # Activate the changes to groups without logging out.
 
 #Install docker-compose
 sudo apt install docker-compose
@@ -366,6 +366,15 @@ systemctl --user start docker-desktop
 #Generate your key
 gpg --generate-key
 pass init <your_generated_gpg-id_public_key>
+
+
+#Install pyenv on Zsh
+curl https://pyenv.run | zsh
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+
+
 
 ##################NodeJS#############
 #Download and import the Nodesource GPG key

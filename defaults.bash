@@ -78,7 +78,6 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 echo " 
 export ZSH="\$HOME/.oh-my-zsh"
 ZSH_THEME="gnzh" 
-ENABLE_CORRECTION="true" ##Command autocorrection 
 
 #add plugins to .zshrc
 plugins=( 
@@ -261,6 +260,7 @@ https://extensions.gnome.org/extension/3724/net-speed-simplified/ # Network uplo
 https://extensions.gnome.org/extension/1723/wintile-windows-10-window-tiling-for-gnome/ ##Better window tiling
 https://extensions.gnome.org/extension/2986/runcat/ # Tells CPU usage
 https://extensions.gnome.org/extension/517/caffeine/ # Prevents lock screen
+https://extensions.gnome.org/extension/744/hide-activities-button/ #Hides activities button
 
 #pip
 sudo apt update

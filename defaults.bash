@@ -13,11 +13,6 @@ sudo apt install -y eza
 #bat(improved cat)
 sudo apt install bat
 
-#autojump(terminal directory navigation)
-sudo apt install autojump
-echo ". /usr/share/autojump/autojump.sh" >> ~/.bashrc
-echo ". /usr/share/autojump/autojump.sh" >> ~/.zshrc
-
 #tgpt(terminal ChatGPT)
 curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin
 
@@ -182,6 +177,16 @@ ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/warhol
 #fzf(terminal fuzzy finder) MAKE SURE ZSH IS INSTALLED BEFORE RUNNING THIS
 git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install # Adds [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh to .zshrc file
+
+#zoxide(terminal directory navigation)
+sudo wget -P /usr/local/bin https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.4/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz
+sudo tar -xvf /usr/local/bin/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz
+sudo rm /usr/local/bin/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz
+
+echo "
+#zoxide
+eval \"\$(zoxide init --cmd cd zsh)\"
+" >> ~/.zshrc
 
 source ~/.zshrc
 

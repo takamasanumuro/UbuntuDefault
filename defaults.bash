@@ -126,6 +126,10 @@ alias QGroundControl='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
 alias falstad='~/Documents/falstad/circuitjs1'
 
 
+alias mar='kill -9 $(lsof -ti :5000) > /dev/null 2>&1 ; cd ~/Documents/Innoprojects/Marujo_Digital && python3 server.py'
+alias marb='kill -9 $(lsof -ti :5000) > /dev/null 2>&1; cd ~/Documents/Innoprojects/Marujo_Digital && python3 server.py &'
+alias markill='kill -9 $(lsof -ti :5000)'
+
 
 
 bindkey '^ ' autosuggest-accept

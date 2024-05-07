@@ -413,3 +413,4 @@ sudo apt install openvpn3
 #Download OpenVPN configuration file
 unzip <file_name>.zip
 openvpn3 session-start --config <file_name>.ovpn
+alias cinit='/usr/local/bin/cmake-init.sh'

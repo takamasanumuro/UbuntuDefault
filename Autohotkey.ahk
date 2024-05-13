@@ -24,6 +24,29 @@
 		Run, /usr/bin/xournalpp
 		return
 	}
+	
+
+^F1::
+	Loop	
+	{
+		Send, {WheelDown}
+		GetKeyState, state, F1, P
+		if state = U
+			break
+		Sleep, 50
+	}
+	return
+
+^F2::
+	Loop	
+	{
+		Send, {WheelUp}
+		GetKeyState, state, F2, P
+		if state = U
+			break
+		Sleep, 50
+	}
+	return
 
 
 ^+Enter::

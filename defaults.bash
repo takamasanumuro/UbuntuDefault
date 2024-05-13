@@ -78,12 +78,9 @@ ZSH_THEME="gnzh"
 plugins=( 
     # other plugins...
 	git #version control
-    autojump #jump to most used directories easily
     zsh-autosuggestions #command autocompletions
-    web-search # google command inside shell
     dirhistory #Navigate directories using alt arrow
     # fast-syntax-highlighting # Highlights command syntax inside shell
-	mosh #Tab completion for mosh hostnames
     zsh-interactive-cd #Fzf tab completion for cd
     tmux #Aliases for tmux
     warhol #command colorizer
@@ -92,25 +89,13 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 
-alias CD='cd'
 alias cat='batcat' # batcat is a better cat
-alias copy='cp'
-alias CP='cp'
 alias dcu='sudo docker-compose up -d'
 alias dps='sudo docker ps'
-alias ga='git add'
-alias gc='git commit -m'
-alias gi='git init'
-alias gp='git push origin'
 alias gpt='tgpt'
-alias huss='husarnet status' # Get status of Husarnet VPN
 alias ipconfig='ifconfig'
-alias LS='ls'
 alias ls='eza' # eza is a better ls
-alias mavconnect="~/.local/bin/mavproxy.py --out=tcpin:0.0.0.0:14580"
 alias mavproxy="~/.local/bin/mavproxy.py"
-alias move='mv'
-alias MV='mv'
 alias piodl='pio device list'
 alias piodm='pio device monitor'
 alias piocl='pio run -t clean'
@@ -121,19 +106,21 @@ alias reloadzsh='source ~/.zshrc'
 alias repup='git add . && git commit --amend --no-edit && git push origin --force-with-lease'
 alias zrc='micro ~/.zshrc'
 alias qgc='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
-alias qgroundcontrol='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
-alias QGroundControl='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
+alias qgroundcontrol='qgc'
+alias QGroundControl='qgc'
 alias falstad='~/Documents/falstad/circuitjs1'
-
+alias bt='bluetoothctl'
+alias jbl="bt connect F8:5C:7D:1C:EB:86"
+alias ngrok-url='curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url'
+alias ngrok-url-ntfy='curl -d \$(ngrok-url) ntfy.sh/innoboat'
+alias sudo='sudo ' #Allows aliases to be used with sudo
+alias apt='nala' #nala is a better apt
 
 alias mar='kill -9 $(lsof -ti :5000) > /dev/null 2>&1 ; cd ~/Documents/Innoprojects/Marujo_Digital && python3 server.py'
 alias marb='kill -9 $(lsof -ti :5000) > /dev/null 2>&1; cd ~/Documents/Innoprojects/Marujo_Digital && python3 server.py &'
 alias markill='kill -9 $(lsof -ti :5000)'
 
-
-
 bindkey '^ ' autosuggest-accept
-
 
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
@@ -160,9 +147,6 @@ fi
 
 
 ########################################################################################################################################
-
-#zplug(package manager)
-curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 
 
 #improved syntax highlighting
@@ -200,8 +184,8 @@ source ~/.zshrc
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo dpkg -i google-chrome-stable_current_amd64.deb
 
-#expect(used to automate terminal commands, which can be used to expect "y" for installing the next programs in the list)
-sudo apt install expect
+#Install tldr (terminal cheatsheet for man pages)
+sudo npm install -g tldr
 
 #remove brltty( in order for CH341 driver to work)
 sudo apt-get autoremove brltty
@@ -209,17 +193,11 @@ sudo apt-get autoremove brltty
 #micro(terminal text editor)
 sudo apt install micro
 
-#httpie(used to make http requests)
-sudo apt install httpie
-
 #htop(terminal system monitor)
 sudo apt install htop
 
 #bottom(terminal system monitor)
 sudo snap install bottom
-
-#neofetch(system info)
-sudo apt install neofetch
 
 # # # # #tree(terminal directory tree)
 sudo apt install tree
@@ -234,11 +212,7 @@ sudo apt install mosh
 #####echo 'eval "$(oh-my-posh init bash)"' >> ~/.bashrc
 #####exec bash
 
-#ngrok(terminal tunneling)
-sudo snap install ngrok
 
-#barrier(terminal mouse and keyboard sharing)
-sudo apt install barrier
 #Disable SSL on configs tab
 sudo micro /etc/gdm3/custom.conf
 #Uncomment #WaylandEnable=false       --> This can cause HDMI bugs on my laptop when I try to use an external monitor
@@ -310,12 +284,6 @@ gnome-session-quit # Logout and login again to enable the change to user permiss
 mkdir -p ~/Documents/DroneTools/QGroundControl
 wget https://d176tv9ibo4jno.cloudfront.net/latest/QGroundControl.AppImage -O ~/Documents/DroneTools/QGroundControl/QGroundControlApp
 chmod +x ~/Documents/DroneTools/QGroundControl/QGroundControlApp
-
-echo "
-alias qgc='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
-alias qgroundcontrol='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
-alias QGroundControl='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
-" >> ~/.zshrc
 
 
 #Install FlightGear for 3d Visualization of SITL simulation
@@ -398,9 +366,6 @@ echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.co
 #Run update and install Node.js
 sudo apt-get update
 sudo apt-get install -y nodejs
-
-#Install tldr (terminal cheatsheet for man pages)
-sudo npm install -g tldr
 
 
 #-------------------------OpenVPN------------

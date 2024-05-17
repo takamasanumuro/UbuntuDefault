@@ -26,7 +26,7 @@
 	}
 	
 
-^F1::
+#F1::
 	Loop	
 	{
 		Send, {WheelDown}
@@ -37,7 +37,7 @@
 	}
 	return
 
-^F2::
+#F2::
 	Loop	
 	{
 		Send, {WheelUp}

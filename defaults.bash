@@ -73,28 +73,29 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 echo " 
 export ZSH="\$HOME/.oh-my-zsh"
 ZSH_THEME="gnzh" 
+bindkey '^ ' autosuggest-accept
 
 #add plugins to .zshrc
 plugins=( 
     # other plugins...
-	git #version control
+    F-Sy-H #improved syntax highlighting
     zsh-autosuggestions #command autocompletions
     dirhistory #Navigate directories using alt arrow
-    # fast-syntax-highlighting # Highlights command syntax inside shell
     zsh-interactive-cd #Fzf tab completion for cd
-    tmux #Aliases for tmux
     warhol #command colorizer
     colored-man-pages # adds color to man pages
 )
 source $ZSH/oh-my-zsh.sh
 
 
+alias sudo='sudo ' #Allows aliases to be used with sudo
+alias apt='nala' #nala is a better apt
 alias cat='batcat' # batcat is a better cat
+alias ls='eza' # eza is a better ls
 alias dcu='sudo docker-compose up -d'
 alias dps='sudo docker ps'
 alias gpt='tgpt'
 alias ipconfig='ifconfig'
-alias ls='eza' # eza is a better ls
 alias mavproxy="~/.local/bin/mavproxy.py"
 alias piodl='pio device list'
 alias piodm='pio device monitor'
@@ -113,14 +114,8 @@ alias bt='bluetoothctl'
 alias jbl="bt connect F8:5C:7D:1C:EB:86"
 alias ngrok-url='curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url'
 alias ngrok-url-ntfy='curl -d \$(ngrok-url) ntfy.sh/innoboat'
-alias sudo='sudo ' #Allows aliases to be used with sudo
-alias apt='nala' #nala is a better apt
 
-alias mar='kill -9 $(lsof -ti :5000) > /dev/null 2>&1 ; cd ~/Documents/Innoprojects/Marujo_Digital && python3 server.py'
-alias marb='kill -9 $(lsof -ti :5000) > /dev/null 2>&1; cd ~/Documents/Innoprojects/Marujo_Digital && python3 server.py &'
-alias markill='kill -9 $(lsof -ti :5000)'
 
-bindkey '^ ' autosuggest-accept
 
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
@@ -139,8 +134,8 @@ function ntfy(){
 }
 
 ##Automatically publish a notification when an user logins into SSH
-if [ -n \"SSH_CLIENT\" ]; then
-    curl -d \"SSH login from \$(whoami) on \$(hostname) at \$(date)\" ntfy.sh/\$defaultNTFYTopic
+if [ -n \"$SSH_CLIENT\" ]; then
+    curl -d \"SSH login from \$(cat \$SSH_CONNECTION | awk '{print \$1}') on \$(hostname) at \$(date)\" ntfy.sh/\$defaultNTFYTopic
 fi
 
 " >> ~/.zshrc
@@ -150,8 +145,8 @@ fi
 
 
 #improved syntax highlighting
-git clone https://github.com/zdharma-continuum/fast-syntax-highlighting.git \
-${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
+git clone https://github.com/z-shell/F-Sy-H.git \
+  ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/F-Sy-H
 
 #autosuggestions
 git clone https://github.com/zsh-users/zsh-autosuggestions \
@@ -167,9 +162,7 @@ git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 ~/.fzf/install # Adds [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh to .zshrc file
 
 #zoxide(terminal directory navigation)
-sudo wget -P /usr/local/bin https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.4/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz
-sudo tar -xvf /usr/local/bin/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz
-sudo rm /usr/local/bin/zoxide-0.9.4-x86_64-unknown-linux-musl.tar.gz
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
 echo "
 #zoxide

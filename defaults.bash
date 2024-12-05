@@ -3,58 +3,6 @@
 #curl(used to download files from the internet)
 sudo apt install curl
 
-
-#eza(improved ls)
-wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo tee /etc/apt/trusted.gpg.d/gierens.asc
-echo "deb http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-sudo apt update
-sudo apt install -y eza
-
-#bat(improved cat)
-sudo apt install bat
-
-#tgpt(terminal ChatGPT)
-curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin
-
-#https://tmuxcheatsheet.com/ Useful tmux cheatsheet
-#tmux(terminal multiplexer and session manager, works very well with mosh)
-sudo apt install tmux
-#tmux packet manager
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-touch ~/.tmux.conf
-echo "
-# List of plugins for ~/.tmux.conf 
-set -g @plugin 'tmux-plugins/tpm'                    #plugin manager
-set -g @plugin 'tmux-plugins/tmux-sensible'          #improves tmux defaults
-set -g @plugin 'catppuccin/tmux'                     #catppuccin status bar
-set -g mouse on                                      #enable mouse support
-set -g @plugin 'tmux-plugins/tmux-yank'              #copy to clipboard
-set -g @plugin 'tmux-plugins/tmux-resurrect'         #save tmux sessions across restarts
-set -g @plugin 'tmux-plugins/tmux-continuum'         #auto save tmux sessions
-
-
-
-#Stats indexes of windows and panes at 1, not 0, to improve ease of layout
-set -g base-index 1
-setw -g pane-base-index 1
-set-window-option -g pane-base-index 1
-set-option -g renumber-windows on
-
-set-option -sa terminal-overrides \",xterm*:Tc\" #fixes tmux colors
-
-# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
-run '~/.tmux/plugins/tpm/tpm'
-      
-" >> ~/.tmux.conf 
-
-
-#Update configurations
-tmux source ~/.tmux.conf 
-#Then press Ctrl-B ,then I (capital I) to fetch the plugins.
-#Press the I alone, after pressing CTRL-B, not together with CTRL-B
-#####################################
-
-
 ###################################3||ZSH install and configuration||###############################################
 
 #zsh(terminal shell)
@@ -63,7 +11,6 @@ sudo apt install zsh
 chsh -s $(which zsh)
 #logout and login again, then open the terminal and select the option to not populate configuration files
 #########################################################################################################################################################################
-gnome-session-quit
 
 #oh-my-zsh(terminal framework)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -72,6 +19,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 #####################################Place those settings into your ~/.zshrc file###################################################
 echo " 
 export ZSH="\$HOME/.oh-my-zsh"
+export PATH="$HOME/.local/bin:$PATH"
 ZSH_THEME="gnzh" 
 bindkey '^ ' autosuggest-accept
 
@@ -92,30 +40,15 @@ alias sudo='sudo ' #Allows aliases to be used with sudo
 alias apt='nala' #nala is a better apt
 alias cat='batcat' # batcat is a better cat
 alias ls='eza' # eza is a better ls
-alias dcu='sudo docker-compose up -d'
-alias dps='sudo docker ps'
 alias gpt='tgpt'
 alias ipconfig='ifconfig'
-alias mavproxy="~/.local/bin/mavproxy.py"
-alias piodl='pio device list'
-alias piodm='pio device monitor'
-alias piocl='pio run -t clean'
-alias phone='scrcpy -S'
-alias phonewifi="scrcpy -S -b 2M -m 768 --tcpip"
-alias reloadbash='source ~/.bashrc'
-alias reloadzsh='source ~/.zshrc'
 alias repup='git add . && git commit --amend --no-edit && git push origin --force-with-lease'
 alias zrc='micro ~/.zshrc'
-alias qgc='~/Documents/DroneTools/QGroundControl/QGroundControlApp'
-alias qgroundcontrol='qgc'
-alias QGroundControl='qgc'
 alias falstad='~/Documents/falstad/circuitjs1'
 alias bt='bluetoothctl'
 alias jbl="bt connect F8:5C:7D:1C:EB:86"
 alias ngrok-url='curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url'
 alias ngrok-url-ntfy='curl -d \$(ngrok-url) ntfy.sh/innoboat'
-
-
 
 
 export warhol_ignore_ls=1 # Exclude ls from warhol as it is already colored by eza's alias to ls
@@ -172,6 +105,57 @@ eval \"\$(zoxide init --cmd cd zsh)\"
 source ~/.zshrc
 
 #########################################################################################################################
+
+#https://tmuxcheatsheet.com/ Useful tmux cheatsheet
+#tmux(terminal multiplexer and session manager, works very well with mosh)
+sudo apt install tmux
+#tmux packet manager
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+touch ~/.tmux.conf
+echo "
+# List of plugins for ~/.tmux.conf 
+set -g @plugin 'tmux-plugins/tpm'                    #plugin manager
+set -g @plugin 'tmux-plugins/tmux-sensible'          #improves tmux defaults
+set -g @plugin 'catppuccin/tmux'                     #catppuccin status bar
+set -g mouse on                                      #enable mouse support
+set -g @plugin 'tmux-plugins/tmux-yank'              #copy to clipboard
+set -g @plugin 'tmux-plugins/tmux-resurrect'         #save tmux sessions across restarts
+set -g @plugin 'tmux-plugins/tmux-continuum'         #auto save tmux sessions
+
+
+
+#Stats indexes of windows and panes at 1, not 0, to improve ease of layout
+set -g base-index 1
+setw -g pane-base-index 1
+set-window-option -g pane-base-index 1
+set-option -g renumber-windows on
+
+set-option -sa terminal-overrides \",xterm*:Tc\" #fixes tmux colors
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
+      
+" >> ~/.tmux.conf 
+
+
+#Update configurations
+tmux source ~/.tmux.conf 
+#Then press Ctrl-B ,then I (capital I) to fetch the plugins.
+#Press the I alone, after pressing CTRL-B, not together with CTRL-B
+#####################################
+
+
+#eza(improved ls)
+wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo tee /etc/apt/trusted.gpg.d/gierens.asc
+echo "deb http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
+sudo apt update
+sudo apt install -y eza
+
+#bat(improved cat)
+sudo apt install bat
+
+#tgpt(terminal ChatGPT)
+curl -sSL https://raw.githubusercontent.com/aandrew-me/tgpt/main/install | bash -s /usr/local/bin
 
 #chrome(browser, only works on AMD64 processor architectures)
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
